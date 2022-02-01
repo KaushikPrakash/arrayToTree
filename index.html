@@ -9,6 +9,7 @@
         <label for="input-array">Input flat array:</label>
         <button type="button" onclick="arrayToTree()">Convert</button>
       </div>
+       <span id="input-error"></span>
       <textarea id="input-array" name="input-array"></textarea>
     </div>
     <div class="json--area">
@@ -106,7 +107,15 @@
    * arrayToTree to recursive convert the array to N-ary tree
    */
   function arrayToTree() {
-    let flatArray = JSON.parse(document.getElementById("input-array").value); // parse string from the input text area
+    let flatArray = [];
+    document.getElementById("input-error").style.display = "none";
+    try {
+      flatArray = JSON.parse(document.getElementById("input-array").value); // parse string from the input text area
+    } catch (err) {
+      document.getElementById("input-error").innerHTML = err.message;
+      document.getElementById("input-error").style.display = "";
+    }
+
     flatArray.sort((i, j) => j.parentId - i.parentId); //sort by assending order of parentId  of the input array
 
     let isChildren = isChildrenPresent(flatArray); //check to iterate through input to see if the node contains any children
