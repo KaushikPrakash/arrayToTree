@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>N-ary Tree</title>
+  </head>
+  <body>
+    <div class="json--area">
+      <div class="json--header">
+        <label for="input-array">Input flat array:</label>
+        <button type="button" onclick="arrayToTree()">Convert</button>
+      </div>
+      <textarea id="input-array" name="input-array"></textarea>
+    </div>
+    <div class="json--area">
+      <div class="json--header">
+        <label for="output-array">Output Tree:</label>
+      </div>
+      <textarea readonly id="output-array"> </textarea>
+    </div>
+  </body>
+</html>
+
+<style>
+  body {
+    display: flex;
+    flex-direction: row;
+  }
+  textarea {
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    height: 850px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    resize: none;
+  }
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  .json--area {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+  }
+  .json--header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  button {
+    border-radius: 8px;
+
+  }
+</style>
+<script>
+  /**
+   * @description
+   * find the index of keys by maping the value
+   */
+  function findKeyByValue(o, v) {
+    return Object.keys(o).find((k) => o[k].nodeId === v);
+  }
+
+  // map to parent -- do this till parentId null
+  /**
+   * @description
+   * Tree construction
+   * @params
+   * input flat array
+   */
+  function constructTree(arr) {
+    let output = [];
+    //loop through the flat array
+    arr.forEach((item, i, obj) => {
+      if (!findKeyByValue(output, item.nodeId)) {
+        //check to find the index of
+        if (item.parentId) {
+          let parentKey = findKeyByValue(obj, item.parentId); //find the index of parent node
+          let parent = obj[parentKey]; //parent node of the current node
+          parent.children = parent.children || [];
+          parent.children.push(item); // push the current node to the children array
+          output.push(parent); // push the whole parent and its child to the output array
+        } else {
+          output.push(item); //push to root
+        }
+      }
+    });
+    return output;
+  }
+
+  /**
+   * @description
+   * isChildrenPresent to find if the current node contains any children
+   */
+  function isChildrenPresent(o) {
+    return !!Object.keys(o).find((k) => o[k].parentId); //return boolean if found
+  }
+
+  /**
+   * @description
+   * arrayToTree to recursive convert the array to N-ary tree
+   */
+  function arrayToTree() {
+    let flatArray = JSON.parse(document.getElementById("input-array").value); // parse string from the input text area
+    flatArray.sort((i, j) => j.parentId - i.parentId); //sort by assending order of parentId  of the input array
+
+    let isChildren = isChildrenPresent(flatArray); //check to iterate through input to see if the node contains any children
+    while (isChildren) {
+      //loop until the flatArray contains children
+      flatArray = constructTree(flatArray);
+      isChildren = isChildrenPresent(flatArray);
+    }
+    flatArray.sort((i, j) => i.previousSiblingId - j.nodeId); //sort by previousSiblingId with respect to the nodeId
+    document.getElementById("output-array").innerHTML += JSON.stringify(
+      flatArray,
+      null,
+      4
+    ); //append to UI
+  }
+</script>
