@@ -111,8 +111,8 @@
     document.getElementById("input-error").style.display = "none";
     try {
       flatArray = JSON.parse(document.getElementById("input-array").value); // parse string from the input text area
-    } catch (err) {
-      document.getElementById("input-error").innerHTML = err.message;
+    } catch {
+      document.getElementById("input-error").innerHTML = "Please enter a valid array";
       document.getElementById("input-error").style.display = "";
     }
 
