@@ -125,7 +125,7 @@
       isChildren = isChildrenPresent(flatArray);
     }
     flatArray.sort((i, j) => i.previousSiblingId - j.nodeId); //sort by previousSiblingId with respect to the nodeId
-    document.getElementById("output-array").innerHTML += JSON.stringify(
+    document.getElementById("output-array").innerHTML = JSON.stringify(
       flatArray,
       null,
       4
